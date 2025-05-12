@@ -35,8 +35,7 @@
       background: "var(--spectrum-global-color-gray-50)",
       border: "1px solid var(--spectrum-global-color-gray-300)",
       flex: flex ? "1 0 auto" : "none",
-      width: flex ? "100%" : "400",
-
+      width: flex ? "100%" : "360",
       ...$component.styles.normal,
     },
   };
@@ -45,7 +44,7 @@
   $: effectivePadded = padded && cardType != "image";
 </script>
 
-<div use:styleable={$component.styles}>
+<div class="super-card-outer" use:styleable={$component.styles}>
   <div
     class="super-card"
     class:withSlot
@@ -55,7 +54,8 @@
     class:padded={effectivePadded}
   >
     <div
-      class={cardType == "image" ? "card-inner-wrapper" : "null"}
+      class="super-card-body"
+      class:with-background={cardType == "image"}
       style="background-image: url({cardType == 'image' ? imageUrl : null});"
     >
       <div class="super-card-header">
@@ -93,7 +93,7 @@
             </div>
             <div class="super-card-subtitle">{subtitle}</div>
           </div>
-          {#if !buttons?.length || (buttons?.length && collapsed)}
+          {#if (!buttons?.length || (buttons?.length && collapsed)) && text}
             <div class="super-card-main-text">{text}</div>
           {/if}
           {#if !collapsed && buttons?.length}
@@ -119,7 +119,10 @@
     </div>
 
     {#if footer || footerButtons?.length}
-      <div class="super-card-footer">
+      <div
+        class="super-card-footer"
+        class:with-background={cardType == "image"}
+      >
         {footer}
         <div class="super-card-buttons">
           {#if footerButtons?.length}
@@ -161,6 +164,10 @@
 </div>
 
 <style>
+  .super-card-outer {
+    display: flex;
+    align-items: stretch;
+  }
   .super-card {
     flex: auto;
     border-radius: 0.25rem;
@@ -192,11 +199,11 @@
         gap: 1rem;
       }
 
-      & *.super-card-footer {
-        padding: 0.75rem 0rem 0rem 0rem;
+      & *.super-card-slot-content {
+        padding: 0rem;
       }
 
-      & *.super-card-slot-content {
+      & *.super-card-footer {
         padding: 0rem;
       }
     }
@@ -207,11 +214,12 @@
     }
 
     &.withFooter {
-      padding-bottom: 1rem;
+      padding-bottom: 0rem;
     }
   }
 
   .super-card-header {
+    flex: auto;
     display: flex;
     align-items: stretch;
     overflow: hidden;
@@ -249,15 +257,20 @@
     }
   }
 
-  .card-inner-wrapper {
+  .super-card-body {
+    flex: auto;
     background-size: cover;
     background-position: center;
-    border-radius: var(--super-card-image-border-radius, 0.25rem);
     transition: all 230ms ease-in-out;
-    padding: 1rem;
+    padding: 0rem;
 
     &:hover {
       filter: grayscale();
+      --contents-opacity: 0.9;
+    }
+
+    &.with-background {
+      padding: 1.25rem;
     }
   }
 
@@ -272,11 +285,11 @@
 
     &.over-background {
       background-color: var(--spectrum-global-color-gray-50);
-      opacity: 0;
+      border-radius: 0.5rem;
+      opacity: var(--contents-opacity, 0);
       transition: all 230ms;
 
       &:hover {
-        opacity: 0.8;
         backdrop-filter: blur(10);
       }
     }
@@ -351,11 +364,17 @@
     font-size: var(--super-card-footer-font-size, 12px);
     color: var(--spectrum-global-color-gray-600);
     border-top: 1px solid var(--spectrum-global-color-gray-200);
-    padding: 1rem 1rem 0rem 1rem;
+    padding: 0rem 1rem;
+    line-height: 2.4rem;
     transition: all 230ms ease-in-out;
+    margin-top: 8px;
 
     &:hover {
       color: var(--spectrum-global-color-gray-700);
+    }
+
+    &.with-background {
+      margin-top: 0px;
     }
   }
 

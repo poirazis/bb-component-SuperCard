@@ -8,12 +8,13 @@
     "hasChildren": true,
     "showEmptyState": false,
     "icon": "Card",
-    "styles": ["padding", "border", "background"],
+    "styles": ["padding", "size", "border", "background"],
     "settings": [
       {
         "type": "select",
         "key": "cardType",
         "label": "Card Type",
+        "defaultValue": "horizontal",
         "options": [
           {
             "label": "Horizontal",
