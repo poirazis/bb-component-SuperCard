@@ -1,0 +1,128 @@
+{
+  "type": "component",
+  "metadata": {},
+  "schema": {
+    "name": "bb-component-SuperCard",
+    "friendlyName": "Super Card",
+    "description": "A Card component for Budibase",
+    "hasChildren": true,
+    "showEmptyState": false,
+    "icon": "Card",
+    "styles": ["padding", "border", "background"],
+    "settings": [
+      {
+        "type": "select",
+        "key": "cardType",
+        "label": "Card Type",
+        "options": [
+          {
+            "label": "Horizontal",
+            "value": "horizontal"
+          },
+          {
+            "label": "Vertical",
+            "value": "vertical"
+          },
+          {
+            "label": "Square",
+            "value": "square"
+          },
+          {
+            "label": "Image",
+            "value": "image"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "key": "subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "key": "text",
+        "label": "Text"
+      },
+      {
+        "type": "text",
+        "key": "footer",
+        "label": "Footer",
+        "dependsOn": {
+          "setting": "cardType",
+          "value": "horizontal",
+          "invert": "true"
+        }
+      },
+      {
+        "type": "boolean",
+        "key": "showImage",
+        "label": "Show Image"
+      },
+      {
+        "type": "boolean",
+        "key": "padded",
+        "label": "Padded",
+        "dependsOn": "showImage"
+      },
+      {
+        "type": "text",
+        "key": "imageUrl",
+        "label": "Image URL",
+        "dependsOn": "showImage"
+      },
+      {
+        "type": "buttonConfiguration",
+        "key": "buttons",
+        "label": "Card Menu",
+        "wide": true
+      },
+      {
+        "type": "boolean",
+        "key": "collapsed",
+        "label": "Collapsed"
+      },
+      {
+        "type": "icon",
+        "key": "menuIcon",
+        "label": "Icon",
+        "defaultValue": "ri-more-2-fill",
+        "dependsOn": "collapsed"
+      },
+      {
+        "type": "buttonConfiguration",
+        "key": "footerButtons",
+        "label": "Footer Menu",
+        "wide": true
+      },
+      {
+        "tag": "style",
+        "type": "select",
+        "label": "Flex Mode",
+        "showLabel": false,
+        "key": "flex",
+        "showInBar": true,
+        "barStyle": "buttons",
+        "options": [
+          {
+            "label": "Shrink",
+            "value": false,
+            "barIcon": "Minimize",
+            "barTitle": "Shrink container"
+          },
+          {
+            "label": "Grow",
+            "value": true,
+            "barIcon": "Maximize",
+            "barTitle": "Grow container"
+          }
+        ],
+        "defaultValue": false
+      }
+    ]
+  }
+}
