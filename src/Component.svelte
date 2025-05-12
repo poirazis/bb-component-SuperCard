@@ -2,6 +2,7 @@
   import { getContext } from "svelte";
   import SuperButton from "../../bb_super_components_shared/src/lib/SuperButton/SuperButton.svelte";
   import SuperPopover from "./../../bb_super_components_shared/src/lib/SuperPopover/SuperPopover.svelte";
+  import { get } from "svelte/store";
 
   export let title = "Super Card";
   export let subtitle = "Subtitle";
@@ -26,8 +27,9 @@
   let quiet = false;
   let iconOnly = false;
 
-  const { styleable } = getContext("sdk");
+  const { styleable, enrichButtonActions } = getContext("sdk");
   const component = getContext("component");
+  const context = getContext("context");
 
   $: $component.styles = {
     ...$component.styles,
@@ -52,6 +54,7 @@
     class:square={cardType == "square"}
     class:vertical={cardType == "vertical"}
     class:padded={effectivePadded}
+    style:--contents-opacity={open ? 0.9 : 0}
   >
     <div
       class="super-card-body"
@@ -154,6 +157,7 @@
               menuItem
               menuAlign={align == "flex-start" ? "left" : "right"}
               iconAfterText={align != "flex-start"}
+              onClick={enrichButtonActions(button?.onClick, $context)}
               on:click={() => (open = false)}
             />
           {/each}
@@ -263,6 +267,8 @@
     background-position: center;
     transition: all 230ms ease-in-out;
     padding: 0rem;
+    display: flex;
+    align-items: flex-start;
 
     &:hover {
       filter: grayscale();
@@ -271,6 +277,7 @@
 
     &.with-background {
       padding: 1.25rem;
+      align-items: flex-end;
     }
   }
 
@@ -396,5 +403,6 @@
     align-items: stretch;
     min-width: 120px;
     background-color: var(--spectrum-global-color-gray-50);
+    opacity: 0.9;
   }
 </style>
