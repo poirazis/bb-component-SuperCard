@@ -25,11 +25,7 @@
             "value": "vertical"
           },
           {
-            "label": "Square",
-            "value": "square"
-          },
-          {
-            "label": "Image",
+            "label": "Full Image",
             "value": "image"
           }
         ]
@@ -37,44 +33,41 @@
       {
         "type": "text",
         "key": "title",
-        "label": "Title"
+        "label": "Title",
+        "defaultValue": "Super Card"
       },
       {
         "type": "text",
         "key": "subtitle",
-        "label": "Subtitle"
+        "label": "Subtitle",
+        "defaultValue": "Card Subtitle"
       },
       {
         "type": "text",
         "key": "text",
-        "label": "Text"
-      },
-      {
-        "type": "text",
-        "key": "footer",
-        "label": "Footer",
-        "dependsOn": {
-          "setting": "cardType",
-          "value": "horizontal",
-          "invert": "true"
-        }
+        "label": "Text",
+        "defaultValue": "{{ lorem 100 }}"
       },
       {
         "type": "boolean",
         "key": "showImage",
-        "label": "Show Image"
+        "label": "Show Image",
+        "defaultValue": true
       },
       {
         "type": "boolean",
         "key": "padded",
         "label": "Padded",
-        "dependsOn": "showImage"
+        "dependsOn": "showImage",
+        "defaultValue": true,
+        "resetOn": "showImage"
       },
       {
         "type": "text",
         "key": "imageUrl",
         "label": "Image URL",
-        "dependsOn": "showImage"
+        "dependsOn": "showImage",
+        "defaultValue": "https://picsum.photos/seed/picsum/200/300"
       },
       {
         "type": "buttonConfiguration",
@@ -95,11 +88,30 @@
         "dependsOn": "collapsed"
       },
       {
-        "type": "buttonConfiguration",
-        "key": "footerButtons",
-        "label": "Footer Menu",
-        "wide": true
+        "section": true,
+        "name": "Footer Settings",
+        "settings": [
+          {
+            "type": "boolean",
+            "key": "showFooter",
+            "label": "Show Footer",
+            "defaultValue": true
+          },
+          {
+            "type": "text",
+            "key": "footer",
+            "label": "Footer Text",
+            "defaultValue": "Card Footer"
+          },
+          {
+            "type": "buttonConfiguration",
+            "key": "footerButtons",
+            "label": "Footer Menu",
+            "wide": true
+          }
+        ]
       },
+
       {
         "tag": "style",
         "type": "select",

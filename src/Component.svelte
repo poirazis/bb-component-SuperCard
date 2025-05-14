@@ -4,17 +4,19 @@
   import SuperPopover from "./../../bb_super_components_shared/src/lib/SuperPopover/SuperPopover.svelte";
   import { get } from "svelte/store";
 
-  export let title = "Super Card";
-  export let subtitle = "Subtitle";
-  export let text = "This is a super card";
-  export let footer = "Footer";
+  export let title;
+  export let subtitle;
+  export let text;
+
   export let showImage;
-  export let imageUrl = "https://picsum.photos/seed/picsum/200/300";
+  export let imageUrl;
   export let padded;
 
   export let buttons;
   export let collapsed = false;
   export let menuIcon = "ri-more-2-fill";
+  export let showFooter;
+  export let footer;
   export let footerButtons;
   export let cardType;
 
@@ -23,9 +25,6 @@
   let anchor;
   let open = false;
   let align = "flex-end";
-  let buttonClass;
-  let quiet = false;
-  let iconOnly = false;
 
   const { styleable, enrichButtonActions } = getContext("sdk");
   const component = getContext("component");
@@ -37,27 +36,27 @@
       background: "var(--spectrum-global-color-gray-50)",
       border: "1px solid var(--spectrum-global-color-gray-300)",
       flex: flex ? "1 0 auto" : "none",
-      width: flex ? "100%" : "360",
+      width: cardType == "vertical" ? "19rem" : "26rem",
       ...$component.styles.normal,
     },
   };
 
   $: withSlot = $component.children;
-  $: effectivePadded = padded && cardType != "image";
 </script>
 
 <div class="super-card-outer" use:styleable={$component.styles}>
   <div
     class="super-card"
     class:withSlot
-    class:withFooter={footer}
-    class:square={cardType == "square"}
+    class:withFooter={showFooter}
     class:vertical={cardType == "vertical"}
-    class:padded={effectivePadded}
+    class:with-background={cardType == "image"}
+    class:padded
     style:--contents-opacity={open ? 0.9 : 0}
   >
     <div
       class="super-card-body"
+      class:padded
       class:with-background={cardType == "image"}
       style="background-image: url({cardType == 'image' ? imageUrl : null});"
     >
@@ -66,6 +65,7 @@
           <div
             class="super-card-header-image-container"
             class:vertical={cardType == "vertical"}
+            class:padded
           >
             <div
               class="super-card-header-image"
@@ -76,6 +76,7 @@
 
         <div
           class="super-card-header-contents"
+          class:vertical={cardType == "vertical"}
           class:padded
           class:over-background={cardType == "image"}
         >
@@ -96,45 +97,46 @@
             </div>
             <div class="super-card-subtitle">{subtitle}</div>
           </div>
-          {#if (!buttons?.length || (buttons?.length && collapsed)) && text}
+
+          {#if text}
             <div class="super-card-main-text">{text}</div>
           {/if}
+
           {#if !collapsed && buttons?.length}
             <div class="super-card-buttons">
               {#each buttons as button}
                 <SuperButton
                   {...button}
-                  on:click={() => {
-                    button.action();
-                  }}
+                  onClick={enrichButtonActions(button?.onClick, $context)}
                 />
               {/each}
             </div>
           {/if}
         </div>
       </div>
-
-      {#if $component?.children}
-        <div class="super-card-slot-content">
-          <slot />
-        </div>
-      {/if}
     </div>
 
-    {#if footer || footerButtons?.length}
+    {#if $component?.children}
+      <div class="super-card-slot-content">
+        <slot />
+      </div>
+    {/if}
+
+    {#if showFooter}
       <div
         class="super-card-footer"
         class:with-background={cardType == "image"}
       >
-        {footer}
-        <div class="super-card-buttons">
+        <span> {footer || ""}</span>
+        <div class="super-card-footer-buttons">
           {#if footerButtons?.length}
             {#each footerButtons as button}
               <SuperButton
                 {...button}
-                on:click={() => {
-                  button.action();
-                }}
+                size="S"
+                quiet
+                type="secondary"
+                onClick={enrichButtonActions(button?.onClick, $context)}
               />
             {/each}
           {/if}
@@ -150,9 +152,6 @@
         {#if buttons?.length}
           {#each buttons as button}
             <SuperButton
-              {buttonClass}
-              {quiet}
-              {iconOnly}
               {...button}
               menuItem
               menuAlign={align == "flex-start" ? "left" : "right"}
@@ -170,22 +169,21 @@
 <style>
   .super-card-outer {
     display: flex;
+    flex-direction: column;
     align-items: stretch;
+    overflow: hidden;
+    min-height: 8rem;
   }
   .super-card {
     flex: auto;
-    border-radius: 0.25rem;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-
-    &.square {
-      aspect-ratio: 1;
-      justify-content: space-between;
-    }
+    gap: 1rem;
 
     &.vertical {
       max-height: unset;
+      padding-bottom: 1rem;
       & *.super-card-header {
         flex-direction: column;
         overflow: hidden;
@@ -195,12 +193,9 @@
     &.padded {
       padding: 1rem;
 
-      & *.super-card-header-contents {
-        padding: 0rem;
-      }
-
       & *.super-card-header {
         gap: 1rem;
+        padding: 0rem;
       }
 
       & *.super-card-slot-content {
@@ -220,13 +215,41 @@
     &.withFooter {
       padding-bottom: 0rem;
     }
+
+    &.with-background {
+      gap: 0rem;
+    }
+  }
+
+  .super-card-body {
+    flex: auto;
+    flex-direction: column;
+    align-items: stretch;
+    background-size: cover;
+    background-position: center;
+    transition: all 230ms ease-in-out;
+    padding: 0rem;
+    display: flex;
+    align-items: flex-start;
+
+    &.padded {
+      padding: 0rem;
+    }
+    &.with-background {
+      padding: 1.25rem;
+      justify-content: flex-end;
+      &:hover {
+        --contents-opacity: 0.85;
+      }
+    }
   }
 
   .super-card-header {
-    flex: auto;
+    width: 100%;
     display: flex;
     align-items: stretch;
     overflow: hidden;
+    gap: 1rem;
   }
 
   .super-card-header-image-container {
@@ -237,6 +260,7 @@
     min-width: 6rem;
     overflow: hidden;
     max-width: 6rem;
+    min-height: 6rem;
 
     &.small {
       min-width: 6rem;
@@ -246,38 +270,21 @@
     &.vertical {
       max-width: unset;
       width: 100%;
-      min-height: 6rem;
+      min-height: 8rem;
+    }
+
+    &.padded {
+      border-radius: 0.25rem;
     }
   }
   .super-card-header-image {
     flex: 1 0 auto;
     background-size: cover;
     background-position: center;
-    border-radius: var(--super-card-image-border-radius, 0.25rem);
     transition: all 230ms ease-in-out;
 
     &:hover {
       transform: scale(1.1);
-    }
-  }
-
-  .super-card-body {
-    flex: auto;
-    background-size: cover;
-    background-position: center;
-    transition: all 230ms ease-in-out;
-    padding: 0rem;
-    display: flex;
-    align-items: flex-start;
-
-    &:hover {
-      filter: grayscale();
-      --contents-opacity: 0.9;
-    }
-
-    &.with-background {
-      padding: 1.25rem;
-      align-items: flex-end;
     }
   }
 
@@ -287,6 +294,7 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 1rem;
+    padding-left: 0rem;
     overflow: hidden;
     gap: 1rem;
 
@@ -295,10 +303,16 @@
       border-radius: 0.5rem;
       opacity: var(--contents-opacity, 0);
       transition: all 230ms;
+      padding: 1rem;
+    }
 
-      &:hover {
-        backdrop-filter: blur(10);
-      }
+    &.vertical {
+      padding: 0rem 1rem;
+      gap: 1.5rem;
+    }
+
+    &.padded:not(.over-background) {
+      padding: 0rem;
     }
   }
 
@@ -321,16 +335,17 @@
   }
 
   .super-card-title {
-    font-weight: 700;
-    color: var(--spectrum-global-color-gray-900);
+    font-weight: 600;
+    color: var(--spectrum-global-color-gray-800);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    font-size: 16px;
   }
 
   .super-card-subtitle {
-    height: 1rem;
-    font-size: var(--super-card-subtitle-font-size, 12px);
+    height: 1.25rem;
+    font-size: var(--super-card-subtitle-font-size, 13px);
     color: var(--spectrum-global-color-gray-700);
     text-transform: uppercase;
     text-overflow: ellipsis;
@@ -353,11 +368,17 @@
 
   .super-card-buttons {
     display: flex;
+    align-items: center;
+    gap: var(--super-card-buttons-gap, 8px);
+    width: 100%;
+  }
+  .super-card-footer-buttons {
+    display: flex;
+    align-items: center;
     gap: var(--super-card-buttons-gap, 8px);
   }
 
   .super-card-slot-content {
-    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -372,9 +393,8 @@
     color: var(--spectrum-global-color-gray-600);
     border-top: 1px solid var(--spectrum-global-color-gray-200);
     padding: 0rem 1rem;
-    line-height: 2.4rem;
+    height: 2.4rem;
     transition: all 230ms ease-in-out;
-    margin-top: 8px;
 
     &:hover {
       color: var(--spectrum-global-color-gray-700);
