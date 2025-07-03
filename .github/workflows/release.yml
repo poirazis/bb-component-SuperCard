@@ -16,19 +16,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: ${{ github.workspace }}/bb-component-SuperCard
-      - uses: actions/checkout@v4
-        name: Checkout Super Components Shared code repository
-        with:
-          repository: poirazis/bb_super_components_shared
-          path: ${{ github.workspace }}/bb_super_components_shared
-          ref: develop
       - uses: actions/setup-node@v4
         with:
           node-version: 18
       - name: Create production plugin bundle
         run: |
-          cd ${{ github.workspace }}/bb_super_components_shared
-          yarn install
           cd ${{ github.workspace }}/bb-component-SuperCard
           release_version=$(jq -r '.version' package.json)
           echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV

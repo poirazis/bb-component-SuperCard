@@ -50,6 +50,12 @@
       },
       {
         "type": "boolean",
+        "key": "wide",
+        "label": "Wide Card",
+        "defaultValue": false
+      },
+      {
+        "type": "boolean",
         "key": "showImage",
         "label": "Show Image",
         "defaultValue": true
@@ -100,13 +106,13 @@
           {
             "type": "text",
             "key": "footer",
-            "label": "Footer Text",
+            "label": "Text",
             "defaultValue": "Card Footer"
           },
           {
             "type": "buttonConfiguration",
             "key": "footerButtons",
-            "label": "Footer Menu",
+            "label": "Buttons",
             "wide": true
           }
         ]

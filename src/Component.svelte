@@ -1,13 +1,12 @@
 <script>
   import { getContext } from "svelte";
-  import SuperButton from "../../bb_super_components_shared/src/lib/SuperButton/SuperButton.svelte";
-  import SuperPopover from "./../../bb_super_components_shared/src/lib/SuperPopover/SuperPopover.svelte";
-  import { get } from "svelte/store";
+  import { SuperButton, SuperPopover } from "@poirazis/supercomponents-shared";
 
   export let title;
   export let subtitle;
   export let text;
 
+  export let wide = false;
   export let showImage;
   export let imageUrl;
   export let padded;
@@ -36,7 +35,7 @@
       background: "var(--spectrum-global-color-gray-50)",
       border: "1px solid var(--spectrum-global-color-gray-300)",
       flex: flex ? "1 0 auto" : "none",
-      width: cardType == "vertical" ? "19rem" : "26rem",
+      width: wide ? "100%" : cardType == "vertical" ? "19rem" : "26rem",
       ...$component.styles.normal,
     },
   };
@@ -173,6 +172,7 @@
     align-items: stretch;
     overflow: hidden;
     min-height: 8rem;
+    color: var(--spectrum-global-color-gray-700);
   }
   .super-card {
     flex: auto;
@@ -336,17 +336,15 @@
 
   .super-card-title {
     font-weight: 600;
-    color: var(--spectrum-global-color-gray-800);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .super-card-subtitle {
     height: 1.25rem;
-    font-size: var(--super-card-subtitle-font-size, 13px);
-    color: var(--spectrum-global-color-gray-700);
+    font-size: 12px;
     text-transform: uppercase;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -369,6 +367,7 @@
   .super-card-buttons {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--super-card-buttons-gap, 8px);
     width: 100%;
   }
@@ -381,7 +380,7 @@
   .super-card-slot-content {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
     padding: 0rem 1rem;
   }
 
