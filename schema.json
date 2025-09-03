@@ -76,6 +76,12 @@
         "defaultValue": "https://picsum.photos/seed/picsum/200/300"
       },
       {
+        "type": "text",
+        "key": "imageSVG",
+        "label": "SVG",
+        "dependsOn": "showImage"
+      },
+      {
         "type": "buttonConfiguration",
         "key": "buttons",
         "label": "Card Menu",
@@ -95,6 +101,69 @@
       },
       {
         "section": true,
+        "name": "Tag Settings",
+        "settings": [
+          {
+            "type": "boolean",
+            "key": "showTag",
+            "label": "Show Tag",
+            "defaultValue": true
+          },
+          {
+            "type": "select",
+            "key": "size",
+            "label": "Size",
+            "defaultValue": "small",
+            "options": [
+              { "label": "Small", "value": "small" },
+              { "label": "Medium", "value": "medium" },
+              { "label": "Large", "value": "large" }
+            ]
+          },
+          {
+            "type": "icon",
+            "key": "tagIcon",
+            "label": "Icon"
+          },
+          {
+            "type": "text",
+            "key": "tagText",
+            "label": "Text",
+            "defaultValue": "Tag"
+          },
+          {
+            "type": "color",
+            "key": "tagColor",
+            "label": "Color",
+            "defaultValue": "var(--spectrum-global-color-static-blue-800)"
+          },
+          {
+            "type": "color",
+            "key": "tagTextColor",
+            "label": "Text Color",
+            "defaultValue": "white"
+          },
+          {
+            "type": "boolean",
+            "key": "tagFilled",
+            "label": "Filled",
+            "defaultValue": true
+          },
+          {
+            "type": "boolean",
+            "key": "tagHidable",
+            "label": "Hidable"
+          },
+          {
+            "type": "event",
+            "key": "onTagHide",
+            "label": "On Hide",
+            "dependsOn": "tagHidable"
+          }
+        ]
+      },
+      {
+        "section": true,
         "name": "Footer Settings",
         "settings": [
           {
@@ -102,6 +171,11 @@
             "key": "showFooter",
             "label": "Show Footer",
             "defaultValue": true
+          },
+          {
+            "type": "icon",
+            "key": "footerIcon",
+            "label": "Icon"
           },
           {
             "type": "text",

@@ -2,6 +2,10 @@
   import { getContext } from "svelte";
   import { SuperButton, SuperPopover } from "@poirazis/supercomponents-shared";
 
+  const { styleable, enrichButtonActions } = getContext("sdk");
+  const component = getContext("component");
+  const context = getContext("context");
+
   export let title;
   export let subtitle;
   export let text;
@@ -9,6 +13,7 @@
   export let wide = false;
   export let showImage;
   export let imageUrl;
+  export let imageSVG;
   export let padded;
 
   export let buttons;
@@ -16,8 +21,23 @@
   export let menuIcon = "ri-more-2-fill";
   export let showFooter;
   export let footer;
+  export let footerIcon;
   export let footerButtons;
   export let cardType;
+
+  // Tag Props
+  export let showTag;
+  export let tagHidable;
+  export let tagIcon;
+  export let tagText;
+  export let tagColor;
+  export let tagTextColor;
+  export let tagFilled = true;
+  export let size = "medium";
+  export let onTagHide;
+
+  let tagHidden = false;
+  $: sizeClass = `size-${size}`;
 
   export let flex;
 
@@ -25,17 +45,12 @@
   let open = false;
   let align = "flex-end";
 
-  const { styleable, enrichButtonActions } = getContext("sdk");
-  const component = getContext("component");
-  const context = getContext("context");
-
   $: $component.styles = {
     ...$component.styles,
     normal: {
       background: "var(--spectrum-global-color-gray-50)",
-      border: "1px solid var(--spectrum-global-color-gray-300)",
       flex: flex ? "1 0 auto" : "none",
-      width: wide ? "100%" : cardType == "vertical" ? "19rem" : "26rem",
+      "max-width": wide ? "100%" : cardType == "vertical" ? "19rem" : "26rem",
       ...$component.styles.normal,
     },
   };
@@ -51,16 +66,21 @@
     class:vertical={cardType == "vertical"}
     class:with-background={cardType == "image"}
     class:padded
-    style:--contents-opacity={open ? 0.9 : 0}
+    style:--contents-opacity={open ? 0.5 : 0}
+    style:--super-tag-color={tagColor}
+    style:--super-tag-text-color={tagTextColor}
+    style:--super-tag-bg-color={tagFilled ? tagColor : "transparent"}
+    style:opacity={open ? 0.8 : 1}
   >
     <div
       class="super-card-body"
       class:padded
       class:with-background={cardType == "image"}
       style="background-image: url({cardType == 'image' ? imageUrl : null});"
+      style:flex={$component.children ? "none" : "auto"}
     >
       <div class="super-card-header">
-        {#if showImage && imageUrl && cardType != "image"}
+        {#if showImage && (imageUrl || imageSVG) && cardType != "image"}
           <div
             class="super-card-header-image-container"
             class:vertical={cardType == "vertical"}
@@ -68,7 +88,9 @@
           >
             <div
               class="super-card-header-image"
-              style="background-image: url({imageUrl});"
+              style={imageSVG
+                ? `background-image: url('data:image/svg+xml;base64,${btoa(imageSVG)}'); background-size: cover;`
+                : `background-image: url(${imageUrl}); background-size: cover;`}
             ></div>
           </div>
         {/if}
@@ -82,19 +104,46 @@
           <div class="super-card-header-text">
             <div class="super-card-header-title">
               <div class="super-card-title">{title}</div>
-              {#if collapsed && buttons?.length}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <i
-                  bind:this={anchor}
-                  class={menuIcon ?? "ri-more-2-fill"}
-                  class:menu-icon={true}
-                  class:open
-                  on:click={() => (open = !open)}
-                ></i>
-              {/if}
+              <div
+                style="display: flex; flex-direction: row; gap: 1rem; align-items: center;"
+              >
+                {#if showTag}
+                  {#if !tagHidden}
+                    <div class="super-tag {sizeClass}">
+                      {#if tagIcon}
+                        <i class={tagIcon} />
+                      {/if}
+                      <span class="tag-text">{tagText ?? ""}</span>
+                      {#if tagHidable}
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <i
+                          class={"ri-close-line close"}
+                          on:click={() => {
+                            tagHidden = true;
+                            onTagHide?.();
+                          }}
+                        />
+                      {/if}
+                    </div>
+                  {/if}
+                {/if}
+                {#if collapsed && buttons?.length}
+                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                  <!-- svelte-ignore a11y-no-static-element-interactions -->
+                  <i
+                    bind:this={anchor}
+                    class={menuIcon ?? "ri-more-2-fill"}
+                    class:menu-icon={true}
+                    class:open
+                    on:click={() => (open = !open)}
+                  ></i>
+                {/if}
+              </div>
             </div>
-            <div class="super-card-subtitle">{subtitle}</div>
+            {#if subtitle}
+              <div class="super-card-subtitle">{subtitle}</div>
+            {/if}
           </div>
 
           {#if text}
@@ -126,7 +175,13 @@
         class="super-card-footer"
         class:with-background={cardType == "image"}
       >
-        <span> {footer || ""}</span>
+        <span class="footer-label">
+          {#if footerIcon}
+            <i class={footerIcon} />
+          {/if}
+          {footer || ""}
+        </span>
+
         <div class="super-card-footer-buttons">
           {#if footerButtons?.length}
             {#each footerButtons as button}
@@ -222,7 +277,6 @@
   }
 
   .super-card-body {
-    flex: auto;
     flex-direction: column;
     align-items: stretch;
     background-size: cover;
@@ -318,11 +372,10 @@
 
   .super-card-header-title {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.5rem;
     width: 100%;
-    overflow: hidden;
   }
 
   .super-card-header-text {
@@ -339,7 +392,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .super-card-subtitle {
@@ -378,6 +431,7 @@
   }
 
   .super-card-slot-content {
+    flex: auto;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -388,12 +442,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: var(--super-card-footer-font-size, 12px);
+    font-size: var(--super-card-footer-font-size, 11px);
     color: var(--spectrum-global-color-gray-600);
     border-top: 1px solid var(--spectrum-global-color-gray-200);
     padding: 0rem 1rem;
-    height: 2.4rem;
+    height: 2.2rem;
     transition: all 230ms ease-in-out;
+
+    & > .footer-label {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
 
     &:hover {
       color: var(--spectrum-global-color-gray-700);
@@ -423,5 +483,82 @@
     min-width: 120px;
     background-color: var(--spectrum-global-color-gray-50);
     opacity: 0.9;
+  }
+
+  .super-tag {
+    flex: none;
+    background-color: var(--super-tag-bg-color);
+    border: 1px solid var(--super-tag-color);
+    color: var(--super-tag-text-color);
+    width: fit-content;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 3rem;
+    font-weight: lighter;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .size-small {
+    height: 1.25rem;
+    padding: 0rem 0.5rem;
+    font-size: 10px;
+    gap: 0.25rem;
+  }
+
+  .size-medium {
+    height: 1.65rem;
+    padding: 0rem 0.75rem;
+    font-size: 12px;
+  }
+
+  .size-large {
+    height: 2rem;
+    padding: 0rem 1rem;
+    font-size: 14px;
+  }
+
+  .tag-text {
+    font-weight: 600;
+    color: var(--super-tag-text-color, var(--spectrum-global-color-gray-700));
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .size-small .tag-text {
+    font-size: 11px;
+  }
+
+  .size-medium .tag-text {
+    font-size: 13px;
+  }
+
+  .size-large .tag-text {
+    font-size: 15px;
+  }
+
+  .close {
+    color: var(--spectrum-global-color-gray-800);
+    margin-right: -0.25rem;
+
+    &:hover {
+      cursor: pointer;
+      color: var(--spectrum-global-color-gray-900);
+    }
+  }
+
+  .size-small .close {
+    font-size: 9px;
+  }
+
+  .size-medium .close {
+    font-size: 11px;
+  }
+
+  .size-large .close {
+    font-size: 13px;
   }
 </style>
