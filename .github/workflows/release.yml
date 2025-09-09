@@ -1,11 +1,11 @@
 name: Release
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
       - master
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,23 +13,21 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          path: ${{ github.workspace }}/bb-component-SuperCard
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v1
         with:
           node-version: 18
-      - name: Create production plugin bundle
+      - name: Make the production plugin bundle
         run: |
-          cd ${{ github.workspace }}/bb-component-SuperCard
-          release_version=$(jq -r '.version' package.json)
+          release_version=$(cat package.json | jq -r '.version')
           echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
-          yarn install
+          yarn
           yarn build
-      - name: Perform GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Perform Github Release
+        uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.RELEASE_VERSION }}
           tag_name: v${{ env.RELEASE_VERSION }}
           generate_release_notes: true
-          files: ${{ github.workspace }}/bb-component-SuperCard/dist/*.tar.gz
+          files: |
+            dist/*.tar.gz
