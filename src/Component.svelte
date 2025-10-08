@@ -50,7 +50,7 @@
     normal: {
       background: "var(--spectrum-global-color-gray-50)",
       flex: flex ? "1 0 auto" : "none",
-      "max-width": wide ? "100%" : cardType == "vertical" ? "19rem" : "26rem",
+      width: wide ? "100%" : cardType == "vertical" ? "19rem" : "26rem",
       ...$component.styles.normal,
     },
   };
@@ -226,7 +226,6 @@
     flex-direction: column;
     align-items: stretch;
     overflow: hidden;
-    min-height: 8rem;
     color: var(--spectrum-global-color-gray-700);
   }
   .super-card {
