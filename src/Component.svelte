@@ -202,7 +202,8 @@
   {#if open}
     <SuperPopover {anchor} {open} on:close={() => (open = false)}>
       <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="button-list">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <div class="button-list" on:click={() => (open = false)}>
         {#if buttons?.length}
           {#each buttons as button}
             <SuperButton
@@ -211,7 +212,6 @@
               menuAlign={align == "flex-start" ? "left" : "right"}
               iconAfterText={align != "flex-start"}
               onClick={enrichButtonActions(button?.onClick, $context)}
-              on:click={() => (open = false)}
             />
           {/each}
         {/if}
