@@ -111,7 +111,7 @@
                   {#if !tagHidden}
                     <div class="super-tag {sizeClass}">
                       {#if tagIcon}
-                        <i class={tagIcon} />
+                        <i class={tagIcon}></i>
                       {/if}
                       <span class="tag-text">{tagText ?? ""}</span>
                       {#if tagHidable}
@@ -123,7 +123,7 @@
                             tagHidden = true;
                             onTagHide?.();
                           }}
-                        />
+                        ></i>
                       {/if}
                     </div>
                   {/if}
@@ -177,7 +177,7 @@
       >
         <span class="footer-label">
           {#if footerIcon}
-            <i class={footerIcon} />
+            <i class={footerIcon}></i>
           {/if}
           {footer || ""}
         </span>

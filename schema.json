@@ -1,6 +1,8 @@
 {
   "type": "component",
-  "metadata": {},
+  "metadata": {
+    "svelteMajor": 5
+  },
   "schema": {
     "name": "bb-component-SuperCard",
     "friendlyName": "Super Card",
@@ -8,7 +10,12 @@
     "hasChildren": true,
     "showEmptyState": false,
     "icon": "Card",
-    "styles": ["padding", "size", "border", "background"],
+    "styles": [
+      "padding",
+      "size",
+      "border",
+      "background"
+    ],
     "settings": [
       {
         "type": "select",
@@ -130,9 +137,18 @@
             "label": "Size",
             "defaultValue": "small",
             "options": [
-              { "label": "Small", "value": "small" },
-              { "label": "Medium", "value": "medium" },
-              { "label": "Large", "value": "large" }
+              {
+                "label": "Small",
+                "value": "small"
+              },
+              {
+                "label": "Medium",
+                "value": "medium"
+              },
+              {
+                "label": "Large",
+                "value": "large"
+              }
             ]
           },
           {
