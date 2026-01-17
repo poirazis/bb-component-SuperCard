@@ -10,12 +10,7 @@
     "hasChildren": true,
     "showEmptyState": false,
     "icon": "Card",
-    "styles": [
-      "padding",
-      "size",
-      "border",
-      "background"
-    ],
+    "styles": ["padding", "size", "border", "background"],
     "settings": [
       {
         "type": "select",
@@ -101,7 +96,8 @@
         "collapsed": true,
         "settings": [
           {
-            "type": "buttonConfiguration",
+            "type": "componentConfiguration",
+            "componentType": "plugin/bb-component-SuperButton",
             "key": "buttons",
             "label": "Card Menu",
             "wide": true
@@ -216,7 +212,8 @@
             "defaultValue": "Card Footer"
           },
           {
-            "type": "buttonConfiguration",
+            "type": "componentConfiguration",
+            "componentType": "plugin/bb-component-SuperButton",
             "key": "footerButtons",
             "label": "Buttons",
             "wide": true
