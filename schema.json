@@ -1,6 +1,8 @@
 {
   "type": "component",
-  "metadata": {},
+  "metadata": {
+    "svelteMajor": 5
+  },
   "schema": {
     "name": "bb-component-SuperCard",
     "friendlyName": "Super Card",
@@ -56,12 +58,6 @@
       },
       {
         "type": "boolean",
-        "key": "showImage",
-        "label": "Show Image",
-        "defaultValue": true
-      },
-      {
-        "type": "boolean",
         "key": "padded",
         "label": "Padded",
         "dependsOn": "showImage",
@@ -69,39 +65,61 @@
         "resetOn": "showImage"
       },
       {
-        "type": "text",
-        "key": "imageUrl",
-        "label": "Image URL",
-        "dependsOn": "showImage",
-        "defaultValue": "https://picsum.photos/seed/picsum/200/300"
+        "section": true,
+        "name": "Image Settings",
+        "collapsed": true,
+        "settings": [
+          {
+            "type": "boolean",
+            "key": "showImage",
+            "label": "Show Image",
+            "defaultValue": true
+          },
+          {
+            "type": "text",
+            "key": "imageUrl",
+            "label": "Image URL",
+            "dependsOn": "showImage",
+            "defaultValue": "https://picsum.photos/seed/picsum/200/300"
+          },
+          {
+            "type": "text",
+            "key": "imageSVG",
+            "label": "SVG",
+            "dependsOn": "showImage"
+          }
+        ]
       },
       {
-        "type": "text",
-        "key": "imageSVG",
-        "label": "SVG",
-        "dependsOn": "showImage"
-      },
-      {
-        "type": "buttonConfiguration",
-        "key": "buttons",
-        "label": "Card Menu",
-        "wide": true
-      },
-      {
-        "type": "boolean",
-        "key": "collapsed",
-        "label": "Collapsed"
-      },
-      {
-        "type": "icon",
-        "key": "menuIcon",
-        "label": "Icon",
-        "defaultValue": "ri-more-2-fill",
-        "dependsOn": "collapsed"
+        "section": true,
+        "name": "Menu Settings",
+        "collapsed": true,
+        "settings": [
+          {
+            "type": "componentConfiguration",
+            "componentType": "plugin/bb-component-SuperButton",
+            "key": "buttons",
+            "label": "Card Menu",
+            "wide": true
+          },
+          {
+            "type": "boolean",
+            "key": "collapsed",
+            "label": "Collapsed"
+          },
+          {
+            "type": "icon",
+            "key": "menuIcon",
+            "label": "Icon",
+            "defaultValue": "ri-more-2-fill",
+            "dependsOn": "collapsed"
+          }
+        ]
       },
       {
         "section": true,
         "name": "Tag Settings",
+        "collapsed": true,
         "settings": [
           {
             "type": "boolean",
@@ -115,9 +133,18 @@
             "label": "Size",
             "defaultValue": "small",
             "options": [
-              { "label": "Small", "value": "small" },
-              { "label": "Medium", "value": "medium" },
-              { "label": "Large", "value": "large" }
+              {
+                "label": "Small",
+                "value": "small"
+              },
+              {
+                "label": "Medium",
+                "value": "medium"
+              },
+              {
+                "label": "Large",
+                "value": "large"
+              }
             ]
           },
           {
@@ -165,6 +192,7 @@
       {
         "section": true,
         "name": "Footer Settings",
+        "collapsed": true,
         "settings": [
           {
             "type": "boolean",
@@ -184,14 +212,14 @@
             "defaultValue": "Card Footer"
           },
           {
-            "type": "buttonConfiguration",
+            "type": "componentConfiguration",
+            "componentType": "plugin/bb-component-SuperButton",
             "key": "footerButtons",
             "label": "Buttons",
             "wide": true
           }
         ]
       },
-
       {
         "tag": "style",
         "type": "select",
